@@ -1,0 +1,125 @@
+.\"  renamefiles - quick and easy rename files in 1 directory
+.\"  
+.\"  Copyright (C) 2015 Gien van den Enden - gien.van.den.enden@gmail.com
+.\" 
+.\"  This program is free software: you can redistribute it and/or modify
+.\"  it under the terms of the GNU General Public License as published by
+.\"  the Free Software Foundation, either version 3 of the License, or
+.\"  (at your option) any later version.
+.\" 
+.\"  This program is distributed in the hope that it will be useful,
+.\"  but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\"  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\"  GNU General Public License for more details.
+.\" 
+.\"  You should have received a copy of the GNU General Public License
+.\"  along with this program.  If not, see <http://www.gnu.org/licenses/>. 
+.\" 
+.TH RENAMEFILES 1  "Augustus 2015" "0.0.1" "User commands"
+.SH NAME
+renamefiles \- quick and easy rename files in 1 directory
+.SH SYNOPSIS
+.B renamefiles
+.RB [ options ]
+.RB [
+.IR directory
+.RB ]
+.IR file\-selection
+.IR rename\-pattern
+.SH DESCRIPTION
+Rename all the selected files too the given rename pattern.
+The filename is divided into parts with the point (.) as seperator.
+There is only 1 wildchar, a star (*) witch selected 0, 1 of more characters.
+A wildchar belongs too a filename part.
+For each part, the wildchars in the rename pattern correspontent with the wildchars
+in the file selection. Speciale case: if the file-selection contains no wildchar and
+the rename part only contains a wildchar then copy the filename part
+.SH OPTIONS
+.TP
+.B \-\-help
+show help and exit
+.TP
+.B \-\-version
+show version and exit
+.TP
+.B \-\-norename
+show only filenames too rename
+.TP
+.B \-\-noheader
+display no header information
+.TP
+.B \-\-nofooter
+display no footer information
+.TP
+.B \-\-nofilenames
+display no filenames
+.TP
+.B \-\-nooutput
+display no information only errors
+.TP
+.B \-\-nostarcheck
+no check for a wildchar (*) in the file selection
+.TP
+.B \-\-failmatchinfo
+display filenames witch do not match and the reason
+.SH EXAMPLE
+.TP 'w'renamefiles 
+.B renamefiles \*(lq*.c\*(rq   \*(lq*.cc\*(rq
+Rename all the files with the extension c too cc
+.TP 'w'renamefiles 
+.B renamefiles \*(lq*_test.c\*(rq   \*(lq*.c\*(rq
+Remove all the _test and the end of a filename, file_test.c -> test.c
+.TP 'w'renamefiles 
+.B renamefiles \*(lq*.part*.*\*(rq   \*(lq*.*.*\*(rq
+Remove the part from the second part of the filename, test.part01.rar -> test.01.rar
+.TP 'w'renamefiles 
+.B renamefiles \*(lq*\*(rq   \*(lq*.c\*(rq
+Give all the filenames with no extension the .c extensie
+.TP 'w'renamefiles 
+.B renamefiles \*(lq*.c\*(rq   \*(lqprog_*.c\*(rq
+Let all the filenames with the .c extension begin with prog_, test.c -> prog_test.c
+.TP 'w'renamefiles 
+.B renamefiles \*(lq*name*.o\*(rq   \*(lq**.*\*(rq
+Remove the name from the filename, renamefiles.o -> refiles.o
+.TP 'w'renamefiles 
+.B renamefiles /home/user/test \*(lq*.c\*(rq   \*(lq*.cc\*(rq
+Rename all the files in the /home/user/test directory with the extension c too cc
+.TP 'w'renamefiles 
+.B renamefiles \*(lq*_test.c\*(rq   \*(lq*.*\*(rq
+Speciale case: file_test.c -> file.c
+.SH EXIT STATUS
+.TP
+0 
+normal end                          
+.TP
+1 
+filename in directory too long
+.TP
+2 
+file selection is too long
+.TP
+3
+rename pattern is too long
+.TP
+4
+unknown option 
+.TP
+5
+too many arguments, maximum 3 (exclusive options)
+.TP
+6
+too less arguments, minimum 2 (exclusive options)
+.TP
+7
+cannot open directory
+.TP
+8
+out of memory
+.TP
+9
+directory name is too long
+.TP
+10
+not one wildchar (*) in the file selection, probably quotes are missing
+.SH AUTHOR
+Gien van den Enden <gien.van.den.enden at gmail dot com>

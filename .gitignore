@@ -1,0 +1,9 @@
+#
+# Git ignore list
+# 2015-08-07
+
+# object files
+*.o
+
+# executable
+renamefiles
