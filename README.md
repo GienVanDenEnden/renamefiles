@@ -34,7 +34,7 @@ Options
 * `--nooutput` display no information only errors
 * `--nostarcheck` no check for a wildchar (*) in the file selection
 * `--failmatchinfo` display filenames witch do not match and the reason
-
+* `--nonamesplit` use the filename as 1 string
 
 Examples
 --------
@@ -62,6 +62,9 @@ renamefiles /home/user/test "*.c" "*.cc"
    
 renamefiles "*_test.c" "*.*"
    Speciale case: file_test.c -> file.c
+   
+renamefiles -nonamesplit "*test*" "*"
+   Remove test from filename: filetest1.c -> file1.c
 ```
 
 License

@@ -43,6 +43,8 @@ static int iSetNoFileNames   = 0 ; // diplay filenames , 0=yes, 1 = 0
 static int iSetFailMatchInfo = 0 ; // display reason why filename is not matches (1=display)
 static int iSetNoStarCheck   = 0 ; // check * in file selection
 
+static char cSetFileNameSpit = '.' ; // character filename splitting
+
 // version info
 static char cVersion[] = "0.0.1"     ; // current version
 static char cVerDate[] = "2015-08-04"; // yyyy-mm-dd
@@ -214,6 +216,7 @@ void printHelp()
    printf ( " --nooutput         display no information only errors\n" );
    printf ( " --nostarcheck      no check for a wildchar (*) in the file selection\n" );
    printf ( " --failmatchinfo    display filenames witch do not match and the reason\n" );
+   printf ( " --nonamesplit      Use the filename as 1 string\n" );
    printf ( "\n" );
    printf ( "The only wildcard in the file-selection and rename-pattern is a *\n" );
    printf ( "Quotes the parameters\n" );
@@ -310,12 +313,12 @@ int filepatternmatch( char *pntFilename, char *pntPattern, char *pntMatchName )
    // and patterns is equal
    // if not no match
    for( iCntFile = 0; iCntFile < iLenfilename; iCntFile++ ) {
-      if ( pntFilename[ iCntFile ] == '.' ) {
+      if ( cSetFileNameSpit != '\0' && pntFilename[ iCntFile ] == cSetFileNameSpit ) {
          iFileParts++ ;
       }
    }
    for( iCntFile = 0; iCntFile < iLenPattern; iCntFile++ ) {
-      if ( pntPattern[ iCntFile ] == '.' ) {
+      if ( cSetFileNameSpit != '\0' && pntPattern[ iCntFile ] == cSetFileNameSpit ) {
          iPattParts++ ;
       }
    }
@@ -328,7 +331,7 @@ int filepatternmatch( char *pntFilename, char *pntPattern, char *pntMatchName )
    // copy the fixed part of the pntMatchName into the new filename
    // that's all until a . or a *
    iPosMatch = 0 ;
-   while( iPosMatch < iLenMatch && pntMatchName[ iPosMatch ] != '.' && pntMatchName[ iPosMatch ] != '*' ) {
+   while( iPosMatch < iLenMatch && pntMatchName[ iPosMatch ] != cSetFileNameSpit && pntMatchName[ iPosMatch ] != '*' ) {
       cFileMatchStripped[ iPosStripped ] = pntMatchName[ iPosMatch ] ;
       iPosStripped++ ;
       iPosMatch++    ;
@@ -344,12 +347,12 @@ int filepatternmatch( char *pntFilename, char *pntPattern, char *pntMatchName )
          break ;
       }
       
-      if ( pntFilename[ iCntFile ] == '.' ) {
+      if ( cSetFileNameSpit != '\0' && pntFilename[ iCntFile ] == cSetFileNameSpit ) {
          int iFoundStartPattern = 0 ;
          // printf( "Part check\n" );
 
          // check end of part can be reach with last star
-         if ( pntPattern[ iPosPattern ] != '.' && pntPattern[ iPosPattern ] != '*' && iPosStarPatt >= 0 ) {
+         if ( pntPattern[ iPosPattern ] != cSetFileNameSpit && pntPattern[ iPosPattern ] != '*' && iPosStarPatt >= 0 ) {
 
             // there is a start set pattern counter back
             iPosPattern = iPosStarPatt ;
@@ -369,7 +372,7 @@ int filepatternmatch( char *pntFilename, char *pntPattern, char *pntMatchName )
          }
          
          // copy all match fixed charaxters until end of part
-         while( iPosMatch < iLenMatch && pntMatchName[ iPosMatch ] != '.' ) {
+         while( iPosMatch < iLenMatch && pntMatchName[ iPosMatch ] != cSetFileNameSpit ) {
            if ( pntMatchName[ iPosMatch ] != '*' ) {
               cFileMatchStripped[ iPosStripped ] = pntMatchName[ iPosMatch ] ;
               iPosStripped++ ;
@@ -378,14 +381,14 @@ int filepatternmatch( char *pntFilename, char *pntPattern, char *pntMatchName )
            }
            iPosMatch++ ;
          }
-         if( iPosMatch < iLenMatch && pntMatchName[ iPosMatch ] == '.' ) {
+         if( iPosMatch < iLenMatch && cSetFileNameSpit != '\0' && pntMatchName[ iPosMatch ] == cSetFileNameSpit ) {
             cFileMatchStripped[ iPosStripped ] = pntMatchName[ iPosMatch ] ;
             iPosStripped++ ;
             iPosMatch++ ;
          }
 
          // part check
-         if( pntPattern[ iPosPattern ] != '.' ) {
+         if( pntPattern[ iPosPattern ] != cSetFileNameSpit ) {
             // if not a wildcard then end of match
             if( pntPattern[ iPosPattern ] != '*' ) {
                 sprintf( cReasonNoMatch, "End of filename part reached but selection not, file pos: %d, selection pos: %d, char %c", iCntFile, iPosPattern, pntPattern[ iPosPattern ] );
@@ -396,7 +399,7 @@ int filepatternmatch( char *pntFilename, char *pntPattern, char *pntMatchName )
             
             iPosPattern++ ;
             // part expected, not found, and of match
-            if( pntPattern[ iPosPattern ] != '.' ) {
+            if( pntPattern[ iPosPattern ] != cSetFileNameSpit ) {
                 sprintf( cReasonNoMatch, "End of filename part reached but selection not, file pos: %d, selection pos: %d, char %c", iCntFile, iPosPattern, pntPattern[ iPosPattern ] );
                 iMatch = 0 ;
                 break ;
@@ -456,7 +459,7 @@ int filepatternmatch( char *pntFilename, char *pntPattern, char *pntMatchName )
          // printf( "iPosMatch: %d\n"      , iPosMatch );
 
          // copy all the fixed chars at the beginnen of the pattern part
-         while( iPosMatch < iLenMatch && pntMatchName[ iPosMatch ] != '.' && pntMatchName[ iPosMatch ] != '*' ) {
+         while( iPosMatch < iLenMatch && pntMatchName[ iPosMatch ] != cSetFileNameSpit && pntMatchName[ iPosMatch ] != '*' ) {
             cFileMatchStripped[ iPosStripped ] = pntMatchName[ iPosMatch ] ;
             iPosStripped++ ;
             iPosMatch++    ;
@@ -488,7 +491,7 @@ int filepatternmatch( char *pntFilename, char *pntPattern, char *pntMatchName )
                   iPosMatch++ ; // end of wildchar, get next in match pattern
                }
                // copy fixed part in match pattern
-               while( iPosMatch < iLenMatch && pntMatchName[ iPosMatch ] != '.' && pntMatchName[ iPosMatch ] != '*' ) {
+               while( iPosMatch < iLenMatch && pntMatchName[ iPosMatch ] != cSetFileNameSpit && pntMatchName[ iPosMatch ] != '*' ) {
                   cFileMatchStripped[ iPosStripped ] = pntMatchName[ iPosMatch ] ;
                   iPosStripped++ ;
                   iPosMatch++ ;
@@ -558,7 +561,7 @@ int filepatternmatch( char *pntFilename, char *pntPattern, char *pntMatchName )
       if ( ( iPosStarFile              == -1              ) &&  /* no wildchar found in selection */
            ( iPosMatch                 == iPartStartMatch ) &&  /* nothing copied */
            ( pntPattern[ iPosPattern ] != '*'             ) &&  /* current patern char is not a wildchar */
-           ( pntMatchName[ iPosMatch + 1 ] == '.' || pntMatchName[ iPosMatch + 1 ] == '\0') ) {
+           ( pntMatchName[ iPosMatch + 1 ] == cSetFileNameSpit || pntMatchName[ iPosMatch + 1 ] == '\0') ) {
          
          // printf( "speciale case end\n" );
          // printf( "iPosStarFile   : %d\n", iPosStarFile    );
@@ -639,6 +642,9 @@ int main( int argc, char *argv[] ) {
          
      } else if ( strcmp( argv[ iCntArgv ], "--failmatchinfo" ) == 0 ) {
          iSetFailMatchInfo = 1 ;
+
+     } else if ( strcmp( argv[ iCntArgv ], "--nonamesplit" ) == 0 ) {
+         cSetFileNameSpit = '\0' ;
          
      } else if ( strncmp( argv[ iCntArgv ], "--", 2  ) == 0 ) {
          fprintf( stderr, "Unknown option: %s\n", argv[ iCntArgv ] );

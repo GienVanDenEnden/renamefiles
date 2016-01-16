@@ -62,6 +62,9 @@ no check for a wildchar (*) in the file selection
 .TP
 .B \-\-failmatchinfo
 display filenames witch do not match and the reason
+.B \-\-nonamesplit
+use the filename as 1 string
+
 .SH EXAMPLE
 .TP 'w'renamefiles 
 .B renamefiles \*(lq*.c\*(rq   \*(lq*.cc\*(rq
@@ -87,6 +90,9 @@ Rename all the files in the /home/user/test directory with the extension c too c
 .TP 'w'renamefiles 
 .B renamefiles \*(lq*_test.c\*(rq   \*(lq*.*\*(rq
 Speciale case: file_test.c -> file.c
+.TP 'w'renamefiles 
+.B renamefiles --nonamesplit \*(lq*test1.c\*(rq   \*(lq*\*(rq
+Remove test from filename: filetest1.c -> file1.c
 .SH EXIT STATUS
 .TP
 0 
